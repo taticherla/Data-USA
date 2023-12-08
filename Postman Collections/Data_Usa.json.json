@@ -1,0 +1,45 @@
+{
+	"info": {
+		"_postman_id": "e1f4b223-5b83-4808-b966-3c36cb02978b",
+		"name": "Data",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Population",
+			"id": "2132def3-1fda-4926-b639-262ec24a6868",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "Latest Year Data",
+			"id": "cbbad581-6570-404a-91ba-9b667101eed4",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "StateWise Population",
+			"id": "05b6eb36-48b7-4e0a-b4cb-02d07c024f83",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		}
+	]
+}
