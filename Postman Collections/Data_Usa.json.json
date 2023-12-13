@@ -19,13 +19,129 @@
 		},
 		{
 			"name": "Latest Year Data",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "e248bf66-b3c4-43e9-944f-ea2a5810d8f0",
+						"exec": [
+							"var template = `\r",
+							"<style type=\"text/css\">\r",
+							"    .tftable {font-size:14px;color:#333333;width:100%;border-width: 1px;border-color: #87ceeb;border-collapse: collapse;}\r",
+							"    .tftable th {font-size:18px;background-color:#87ceeb;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;text-align:left;}\r",
+							"    .tftable tr {background-color:#ffffff;}\r",
+							"    .tftable td {font-size:14px;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;}\r",
+							"    .tftable tr:hover {background-color:#e0ffff;}\r",
+							"</style>\r",
+							"\r",
+							"<table class=\"tftable\" border=\"1\">\r",
+							"    <tr>\r",
+							"        <th>Nation</th>\r",
+							"        <th>Year</th>\r",
+							"        <th>Population</th>\r",
+							"    </tr>\r",
+							"    \r",
+							"    {{#each response.data}}\r",
+							"        <tr>\r",
+							"            <td>{{Nation}}</td>\r",
+							"            <td>{{Year}}</td>\r",
+							"            <td>{{Population}}</td>\r",
+							"        </tr>\r",
+							"    {{/each}}\r",
+							"</table>\r",
+							"`;\r",
+							"\r",
+							"function constructVisualizerPayload() {\r",
+							"    return {response: pm.response.json()}\r",
+							"}\r",
+							"\r",
+							"pm.visualizer.set(template, constructVisualizerPayload());\r",
+							"pm.test(\"Response status code is 200\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Response Content-Type header is application/json\", function () {\r",
+							"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Source object is present in the response\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"    \r",
+							"    pm.expect(responseData.source).to.exist;\r",
+							"});\r",
+							"\r",
+							"\r",
+							"//pm.test(\"Verify source object contains expected annotations and measures\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"    \r",
+							"    pm.expect(responseData.source).to.be.an('object');\r",
+							"    pm.expect(responseData.source.annotations).to.be.an('object').and.to.have.all.keys('source_name', 'source_description', 'dataset_name', 'dataset_link', 'table_id', 'topic', 'subtopic');\r",
+							"    pm.expect(responseData.source.measures).to.be.an('array').and.to.have.lengthOf.at.least(1);\r",
+							"});//\r",
+							"\r",
+							"pm.test(\"Verify source object contains expected annotations and measures\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"    \r",
+							"    pm.expect(responseData.source).to.be.an('array'); // Check if source is an array\r",
+							"    \r",
+							"    if (Array.isArray(responseData.source)) {\r",
+							"        // Additional checks for array, if needed\r",
+							"    } else {\r",
+							"        // Assuming source is an object, proceed with further assertions\r",
+							"        pm.expect(responseData.source.annotations).to.be.an('object').and.to.have.all.keys('source_name', 'source_description', 'dataset_name', 'dataset_link', 'table_id', 'topic', 'subtopic');\r",
+							"        pm.expect(responseData.source.measures).to.be.an('array').and.to.have.lengthOf.at.least(1);\r",
+							"    }\r",
+							"});\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"id": "cbbad581-6570-404a-91ba-9b667101eed4",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
 			},
 			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": {
+						"key": "Authorization",
+						"value": "PMAK-657325d9d6d753003823c50d-a804c3f845cd088691fd3935547600f69b"
+					}
+				},
 				"method": "GET",
-				"header": []
+				"header": [],
+				"url": {
+					"raw": "https://datausa.io/api/data?drilldowns=Nation&measures=Population&year=latest",
+					"protocol": "https",
+					"host": [
+						"datausa",
+						"io"
+					],
+					"path": [
+						"api",
+						"data"
+					],
+					"query": [
+						{
+							"key": "drilldowns",
+							"value": "Nation"
+						},
+						{
+							"key": "measures",
+							"value": "Population"
+						},
+						{
+							"key": "year",
+							"value": "latest"
+						}
+					]
+				}
 			},
 			"response": []
 		},
