@@ -153,6 +153,15 @@
 					"script": {
 						"id": "a72cc6c6-a971-4cc2-9bd9-7f6dc28fb37c",
 						"exec": [
+							"<tr>\r",
+							"    <td>{{ID Nation}}</td>\r",
+							"    <td>{{Nation}}</td>\r",
+							"    <td>{{Year}}</td>\r",
+							"    <td>{{Population}}</td>\r",
+							"    <td>{{Slug Nation}}</td>\r",
+							"</tr>\r",
+							"\r",
+							"\r",
 							"pm.test(\"Response status code is 200\", function () {\r",
 							"    pm.expect(pm.response.code).to.equal(200);\r",
 							"});\r",
