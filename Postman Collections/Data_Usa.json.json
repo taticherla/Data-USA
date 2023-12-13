@@ -17,17 +17,59 @@
 							"    pm.response.to.have.status(200);\r",
 							"});\r",
 							"\r",
-							"\r",
-							"pm.test(\"Content-Type header is application/json\", function () {\r",
+							"pm.test(\"Response Content-Type header is application/json\", function () {\r",
 							"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");\r",
 							"});\r",
 							"\r",
-							"\r",
-							"pm.test(\"Data array is present and contains expected number of elements\", function () {\r",
+							"pm.test(\"Source object is present in the response\", function () {\r",
 							"    const responseData = pm.response.json();\r",
 							"    \r",
-							"    pm.expect(responseData).to.have.property('data').that.is.an('array').with.lengthOf(1);\r",
-							"});"
+							"    pm.expect(responseData.source).to.exist;\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Verify source object contains expected annotations and measures\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"    \r",
+							"    pm.expect(responseData.source).to.be.an('array'); // Check if source is an array\r",
+							"    \r",
+							"    if (Array.isArray(responseData.source)) {\r",
+							"        // Additional checks for array, if needed\r",
+							"    } else {\r",
+							"        // Assuming source is an object, proceed with further assertions\r",
+							"        pm.expect(responseData.source[0].annotations).to.be.an('object').and.to.have.all.keys('source_name', 'source_description', 'dataset_name', 'dataset_link', 'table_id', 'topic', 'subtopic');\r",
+							"        pm.expect(responseData.source[0].measures).to.be.an('array').and.to.have.lengthOf.at.least(1);\r",
+							"    }\r",
+							"});var template = `\r",
+							"<style type=\"text/css\">\r",
+							"    .tftable {font-size:14px;color:#333333;width:100%;border-width: 1px;border-color: #87ceeb;border-collapse: collapse;}\r",
+							"    .tftable th {font-size:18px;background-color:#87ceeb;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;text-align:left;}\r",
+							"    .tftable tr {background-color:#ffffff;}\r",
+							"    .tftable td {font-size:14px;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;}\r",
+							"    .tftable tr:hover {background-color:#e0ffff;}\r",
+							"</style>\r",
+							"\r",
+							"<table class=\"tftable\" border=\"1\">\r",
+							"    <tr>\r",
+							"        <th>Nation</th>\r",
+							"        <th>Year</th>\r",
+							"        <th>Population</th>\r",
+							"    </tr>\r",
+							"    \r",
+							"    {{#each response.data}}\r",
+							"        <tr id=row_{{@key}}>\r",
+							"            <td>{{Nation}}</td>\r",
+							"            <td>{{Year}}</td>\r",
+							"            <td>{{Population}}</td>\r",
+							"        </tr>\r",
+							"    {{/each}}\r",
+							"</table>\r",
+							"`;\r",
+							"\r",
+							"function constructVisualizerPayload() {\r",
+							"    return {response: pm.response.json()}\r",
+							"}\r",
+							"\r",
+							"pm.visualizer.set(template, constructVisualizerPayload());"
 						],
 						"type": "text/javascript"
 					}
@@ -74,7 +116,154 @@
 					]
 				}
 			},
-			"response": []
+			"response": [
+				{
+					"id": "d8f729de-4fdc-4b9c-8d5d-b24a981f1291",
+					"name": "Population",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://datausa.io/api/data?drilldowns=Nation&measures=Population&year=latest",
+							"protocol": "https",
+							"host": [
+								"datausa",
+								"io"
+							],
+							"path": [
+								"api",
+								"data"
+							],
+							"query": [
+								{
+									"key": "drilldowns",
+									"value": "Nation"
+								},
+								{
+									"key": "measures",
+									"value": "Population"
+								},
+								{
+									"key": "year",
+									"value": "latest"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Wed, 13 Dec 2023 15:48:16 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "x-dns-prefetch-control",
+							"value": "off"
+						},
+						{
+							"key": "strict-transport-security",
+							"value": "max-age=15552000; includeSubDomains"
+						},
+						{
+							"key": "x-download-options",
+							"value": "noopen"
+						},
+						{
+							"key": "x-content-type-options",
+							"value": "nosniff"
+						},
+						{
+							"key": "x-xss-protection",
+							"value": "1; mode=block"
+						},
+						{
+							"key": "content-language",
+							"value": "en"
+						},
+						{
+							"key": "etag",
+							"value": "W/\"249-GnXMLoG0mr+MtFTkNfaEx+1KN9o\""
+						},
+						{
+							"key": "vary",
+							"value": "Accept-Encoding"
+						},
+						{
+							"key": "last-modified",
+							"value": "Mon, 11 Dec 2023 13:46:57 GMT"
+						},
+						{
+							"key": "x-cache-status",
+							"value": "HIT"
+						},
+						{
+							"key": "x-frame-options",
+							"value": "SAMEORIGIN"
+						},
+						{
+							"key": "access-control-allow-origin",
+							"value": "*"
+						},
+						{
+							"key": "access-control-allow-credentials",
+							"value": "true"
+						},
+						{
+							"key": "access-control-allow-methods",
+							"value": "GET, POST, OPTIONS"
+						},
+						{
+							"key": "access-control-allow-headers",
+							"value": "DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type"
+						},
+						{
+							"key": "x-cache-key",
+							"value": "https://datausa.io/api/data?drilldowns=Nation&measures=Population&year=latest"
+						},
+						{
+							"key": "CF-Cache-Status",
+							"value": "BYPASS"
+						},
+						{
+							"key": "Report-To",
+							"value": "{\"endpoints\":[{\"url\":\"https:\\/\\/a.nel.cloudflare.com\\/report\\/v3?s=BBWbpAsYNLUKWcPjbWMyLJVwPZBHssNFRYzQGFiCQBk0w5bkVKpV0sU8lmMjFCTBqJafhMvp1HP4tJ5JhXdeeTltOFQ0Mh3wf5us48kmRjwPPe23M0d57hOZXS8%3D\"}],\"group\":\"cf-nel\",\"max_age\":604800}"
+						},
+						{
+							"key": "NEL",
+							"value": "{\"success_fraction\":0,\"report_to\":\"cf-nel\",\"max_age\":604800}"
+						},
+						{
+							"key": "Server",
+							"value": "cloudflare"
+						},
+						{
+							"key": "CF-RAY",
+							"value": "834f59b23a8a6de8-CPH"
+						},
+						{
+							"key": "Content-Encoding",
+							"value": "br"
+						}
+					],
+					"cookie": [],
+					"responseTime": null,
+					"body": "{\n    \"data\": [\n        {\n            \"ID Nation\": \"01000US\",\n            \"Nation\": \"United States\",\n            \"ID Year\": 2021,\n            \"Year\": \"2021\",\n            \"Population\": 329725481,\n            \"Slug Nation\": \"united-states\"\n        }\n    ],\n    \"source\": [\n        {\n            \"measures\": [\n                \"Population\"\n            ],\n            \"annotations\": {\n                \"source_name\": \"Census Bureau\",\n                \"source_description\": \"The American Community Survey (ACS) is conducted by the US Census and sent to a portion of the population every year.\",\n                \"dataset_name\": \"ACS 5-year Estimate\",\n                \"dataset_link\": \"http://www.census.gov/programs-surveys/acs/\",\n                \"table_id\": \"B01003\",\n                \"topic\": \"Diversity\",\n                \"subtopic\": \"Demographics\"\n            },\n            \"name\": \"acs_yg_total_population_5\",\n            \"substitutions\": []\n        }\n    ]\n}"
+				}
+			]
 		},
 		{
 			"name": "Latest Year Data",
@@ -113,7 +302,37 @@
 							"        pm.expect(responseData.source.annotations).to.be.an('object').and.to.have.all.keys('source_name', 'source_description', 'dataset_name', 'dataset_link', 'table_id', 'topic', 'subtopic');\r",
 							"        pm.expect(responseData.source.measures).to.be.an('array').and.to.have.lengthOf.at.least(1);\r",
 							"    }\r",
-							"});"
+							"});var template = `\r",
+							"<style type=\"text/css\">\r",
+							"    .tftable {font-size:14px;color:#333333;width:100%;border-width: 1px;border-color: #87ceeb;border-collapse: collapse;}\r",
+							"    .tftable th {font-size:18px;background-color:#87ceeb;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;text-align:left;}\r",
+							"    .tftable tr {background-color:#ffffff;}\r",
+							"    .tftable td {font-size:14px;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;}\r",
+							"    .tftable tr:hover {background-color:#e0ffff;}\r",
+							"</style>\r",
+							"\r",
+							"<table class=\"tftable\" border=\"1\">\r",
+							"    <tr>\r",
+							"        <th>Nation</th>\r",
+							"        <th>Year</th>\r",
+							"        <th>Population</th>\r",
+							"    </tr>\r",
+							"    \r",
+							"    {{#each response.data}}\r",
+							"        <tr>\r",
+							"            <td>{{Nation}}</td>\r",
+							"            <td>{{Year}}</td>\r",
+							"            <td>{{Population}}</td>\r",
+							"        </tr>\r",
+							"    {{/each}}\r",
+							"</table>\r",
+							"`;\r",
+							"\r",
+							"function constructVisualizerPayload() {\r",
+							"  return {response: pm.response.json()}\r",
+							"}\r",
+							"\r",
+							"pm.visualizer.set(template, constructVisualizerPayload());"
 						],
 						"type": "text/javascript"
 					}
@@ -171,7 +390,7 @@
 						"id": "fdd8fcaa-5249-4371-b195-9ed01e023635",
 						"exec": [
 							"pm.test(\"Response status code is 200\", function () {\r",
-							"    pm.expect(pm.response.code).to.equal(200);\r",
+							"    pm.response.to.have.status(200);\r",
 							"});\r",
 							"\r",
 							"pm.test(\"Response Content-Type header is application/json\", function () {\r",
@@ -188,79 +407,76 @@
 							"    const responseData = pm.response.json();\r",
 							"    \r",
 							"    pm.expect(responseData.source).to.be.an('array'); // Check if source is an array\r",
-							"    \r",
-							"    if (Array.isArray(responseData.source)) {\r",
-							"        // Additional checks for array, if needed\r",
-							"    } else {\r",
-							"        // Assuming source is an object, proceed with further assertions\r",
-							"        pm.expect(responseData.source.annotations).to.be.an('object').and.to.have.all.keys('source_name', 'source_description', 'dataset_name', 'dataset_link', 'table_id', 'topic', 'subtopic');\r",
-							"        pm.expect(responseData.source.measures).to.be.an('array').and.to.have.lengthOf.at.least(1);\r",
-							"    }\r",
+							"    pm.expect(responseData.source[0].annotations).to.be.an('object').and.to.have.all.keys('source_name', 'source_description', 'dataset_name', 'dataset_link', 'table_id', 'topic', 'subtopic');\r",
+							"    pm.expect(responseData.source[0].measures).to.be.an('array').and.to.have.lengthOf.at.least(1);\r",
 							"});var template = `\r",
-							"//<style type=\"text/css\">\r",
-							"    .tftable {font-size:14px;color:#333333;width:100%;border-width: 1px;border-color: #87ceeb;border-collapse: collapse;}\r",
-							"    .tftable th {font-size:18px;background-color:#87ceeb;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;text-align:left;}\r",
-							"    .tftable tr {background-color:#ffffff;}\r",
-							"    .tftable td {font-size:14px;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;}\r",
-							"    .tftable tr:hover {background-color:#e0ffff;}\r",
-							"</style>\r",
+							"<canvas id=\"myChart\" height=\"75\"></canvas>\r",
 							"\r",
-							"<table class=\"tftable\" border=\"1\">\r",
-							"    <tr>\r",
-							"        <th>ID State</th>\r",
-							"        <th>State</th>\r",
-							"        <th>ID Year</th>\r",
-							"        <th>Year</th>\r",
-							"        <th>Population</th>\r",
-							"        <th>Slug State</th>\r",
-							"    </tr>\r",
-							"    \r",
-							"    {{#each response.data}}\r",
-							"        <tr>\r",
-							"            <td>{{ID State}}</td>\r",
-							"            <td>{{State}}</td>\r",
-							"            <td>{{ID Year}}</td>\r",
-							"            <td>{{Year}}</td>\r",
-							"            <td>{{Population}}</td>\r",
-							"            <td>{{Slug State}}</td>\r",
-							"        </tr>\r",
-							"    {{/each}}\r",
-							"</table>//\r",
+							"<script src=\"https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js\"></script>\r",
 							"\r",
-							"<style type=\"text/css\">\r",
-							"    .tftable {font-size:14px;color:#333333;width:100%;border-width: 1px;border-color: #87ceeb;border-collapse: collapse;}\r",
-							"    .tftable th {font-size:18px;background-color:#87ceeb;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;text-align:left;}\r",
-							"    .tftable tr {background-color:#ffffff;}\r",
-							"    .tftable td {font-size:14px;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;}\r",
-							"    .tftable tr:hover {background-color:#e0ffff;}\r",
-							"</style>\r",
+							"<script>\r",
+							"    var ctx = document.getElementById(\"myChart\");\r",
 							"\r",
-							"<table class=\"tftable\" border=\"1\">\r",
-							"    <tr>\r",
-							"        <th>ID State</th>\r",
-							"        <th>State</th>\r",
-							"        <th>ID Year</th>\r",
-							"        <th>Year</th>\r",
-							"        <th>Population</th>\r",
-							"        <th>Slug State</th>\r",
-							"    </tr>\r",
-							"    \r",
-							"    {{#each response.data}}\r",
-							"        <tr>\r",
-							"            <td>{{ID_State}}</td>\r",
-							"            <td>{{State}}</td>\r",
-							"            <td>{{ID_Year}}</td>\r",
-							"            <td>{{Year}}</td>\r",
-							"            <td>{{Population}}</td>\r",
-							"            <td>{{Slug_State}}</td>\r",
-							"        </tr>\r",
-							"    {{/each}}\r",
-							"</table>\r",
+							"    var myChart = new Chart(ctx, {\r",
+							"        type: \"bar\",\r",
+							"        data: {\r",
+							"            labels: [],\r",
+							"            datasets: [{\r",
+							"                data: [],\r",
+							"                \r",
+							"                // Change these colours to customize the chart\r",
+							"                backgroundColor: [\"#003f5c\", \"#58508d\", \"#bc5090\", \"#ff6361\", \"#ffa600\"],\r",
+							"            }]\r",
+							"        },\r",
+							"        options: {\r",
+							"            legend: { display: false },\r",
+							"            title: {\r",
+							"                display: true,\r",
+							"                text: 'Population by State'\r",
+							"            },\r",
+							"            scales: {\r",
+							"                xAxes: [{\r",
+							"                    display: true,\r",
+							"                    scaleLabel: {\r",
+							"                        display: true,\r",
+							"                        labelString: 'State'\r",
+							"                    }\r",
+							"                }],\r",
+							"                yAxes: [{\r",
+							"                    display: true,\r",
+							"                    scaleLabel: {\r",
+							"                        display: true,\r",
+							"                        labelString: 'Population'\r",
+							"                    }\r",
+							"                }]\r",
+							"            }\r",
+							"        }\r",
 							"\r",
-							"`;\r",
+							"    });\r",
+							"\r",
+							"    // Access the data passed to pm.visualizer.set() from the JavaScript\r",
+							"    // code of the Visualizer template\r",
+							"    pm.getData(function (err, value) {\r",
+							"        myChart.data.datasets[0].data = value.response.data.map(state => state.Population);\r",
+							"        myChart.data.labels = value.response.data.map(state => state.State);\r",
+							"        myChart.update();\r",
+							"    });\r",
+							"\r",
+							"</script>`;\r",
 							"\r",
 							"function constructVisualizerPayload() {\r",
-							"    return {response: pm.response.json()}\r",
+							"    var res = pm.response.json();\r",
+							"\r",
+							"    var visualizerData = {\r",
+							"        \r",
+							"        // Labels take an array of strings\r",
+							"        labels: res.data.map(state => state.State),\r",
+							"        \r",
+							"        // Data takes an array of numbers\r",
+							"        data: res.data.map(state => state.Population)\r",
+							"    };\r",
+							"\r",
+							"    return {response: visualizerData};\r",
 							"}\r",
 							"\r",
 							"pm.visualizer.set(template, constructVisualizerPayload());"
@@ -311,6 +527,35 @@
 				}
 			},
 			"response": []
+		}
+	],
+	"auth": {
+		"type": "apikey",
+		"apikey": {
+			"key": "Authorization",
+			"value": "PMAK-657325d9d6d753003823c50d-a804c3f845cd088691fd3935547600f69b"
+		}
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "904f4641-8941-43ee-b729-9a2ac892096c",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "a649c1b4-ffae-4c85-a437-084caf59fc4f",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
 		}
 	]
 }
