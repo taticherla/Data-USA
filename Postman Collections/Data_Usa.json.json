@@ -7,24 +7,28 @@
 	"item": [
 		{
 			"name": "Population",
-			"id": "2132def3-1fda-4926-b639-262ec24a6868",
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
-			"request": {
-				"method": "GET",
-				"header": []
-			},
-			"response": []
-		},
-		{
-			"name": "Latest Year Data",
 			"event": [
 				{
 					"listen": "test",
 					"script": {
-						"id": "e248bf66-b3c4-43e9-944f-ea2a5810d8f0",
+						"id": "b194a0b3-4dd6-4430-aa0a-29555f70bf11",
 						"exec": [
+							"pm.test(\"Response status code is 200\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Content-Type header is application/json\", function () {\r",
+							"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Data array is present and contains expected number of elements\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"    \r",
+							"    pm.expect(responseData).to.have.property('data').that.is.an('array').with.lengthOf(1);\r",
+							"});\r",
+							"\r",
 							"var template = `\r",
 							"<style type=\"text/css\">\r",
 							"    .tftable {font-size:14px;color:#333333;width:100%;border-width: 1px;border-color: #87ceeb;border-collapse: collapse;}\r",
@@ -36,26 +40,88 @@
 							"\r",
 							"<table class=\"tftable\" border=\"1\">\r",
 							"    <tr>\r",
-							"        <th>Nation</th>\r",
+							"        <th>ID State</th>\r",
+							"        <th>State</th>\r",
+							"        <th>ID Year</th>\r",
 							"        <th>Year</th>\r",
 							"        <th>Population</th>\r",
+							"        <th>Slug State</th>\r",
 							"    </tr>\r",
 							"    \r",
 							"    {{#each response.data}}\r",
-							"        <tr>\r",
-							"            <td>{{Nation}}</td>\r",
+							"        <tr id=row_{{@key}}>\r",
+							"            <td>{{ID State}}</td>\r",
+							"            <td>{{State}}</td>\r",
+							"            <td>{{ID Year}}</td>\r",
 							"            <td>{{Year}}</td>\r",
 							"            <td>{{Population}}</td>\r",
+							"            <td>{{Slug State}}</td>\r",
 							"        </tr>\r",
 							"    {{/each}}\r",
 							"</table>\r",
 							"`;\r",
 							"\r",
 							"function constructVisualizerPayload() {\r",
-							"    return {response: pm.response.json()}\r",
+							"    return {response: pm.response.json()};\r",
 							"}\r",
 							"\r",
-							"pm.visualizer.set(template, constructVisualizerPayload());\r",
+							"pm.visualizer.set(template, constructVisualizerPayload());"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"id": "2132def3-1fda-4926-b639-262ec24a6868",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": {
+						"key": "Authorization",
+						"value": "PMAK-657325d9d6d753003823c50d-a804c3f845cd088691fd3935547600f69b"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://datausa.io/api/data?drilldowns=Nation&measures=Population&year=latest",
+					"protocol": "https",
+					"host": [
+						"datausa",
+						"io"
+					],
+					"path": [
+						"api",
+						"data"
+					],
+					"query": [
+						{
+							"key": "drilldowns",
+							"value": "Nation"
+						},
+						{
+							"key": "measures",
+							"value": "Population"
+						},
+						{
+							"key": "year",
+							"value": "latest"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Latest Year Data",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "afb00a01-1743-48c0-8e17-6b90399db4cb",
+						"exec": [
 							"pm.test(\"Response status code is 200\", function () {\r",
 							"    pm.expect(pm.response.code).to.equal(200);\r",
 							"});\r",
@@ -73,14 +139,6 @@
 							"});\r",
 							"\r",
 							"\r",
-							"//pm.test(\"Verify source object contains expected annotations and measures\", function () {\r",
-							"    const responseData = pm.response.json();\r",
-							"    \r",
-							"    pm.expect(responseData.source).to.be.an('object');\r",
-							"    pm.expect(responseData.source.annotations).to.be.an('object').and.to.have.all.keys('source_name', 'source_description', 'dataset_name', 'dataset_link', 'table_id', 'topic', 'subtopic');\r",
-							"    pm.expect(responseData.source.measures).to.be.an('array').and.to.have.lengthOf.at.least(1);\r",
-							"});//\r",
-							"\r",
 							"pm.test(\"Verify source object contains expected annotations and measures\", function () {\r",
 							"    const responseData = pm.response.json();\r",
 							"    \r",
@@ -93,10 +151,7 @@
 							"        pm.expect(responseData.source.annotations).to.be.an('object').and.to.have.all.keys('source_name', 'source_description', 'dataset_name', 'dataset_link', 'table_id', 'topic', 'subtopic');\r",
 							"        pm.expect(responseData.source.measures).to.be.an('array').and.to.have.lengthOf.at.least(1);\r",
 							"    }\r",
-							"});\r",
-							"\r",
-							"\r",
-							""
+							"});"
 						],
 						"type": "text/javascript"
 					}
@@ -151,33 +206,21 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "a72cc6c6-a971-4cc2-9bd9-7f6dc28fb37c",
+						"id": "fdd8fcaa-5249-4371-b195-9ed01e023635",
 						"exec": [
-							"<tr>\r",
-							"    <td>{{ID Nation}}</td>\r",
-							"    <td>{{Nation}}</td>\r",
-							"    <td>{{Year}}</td>\r",
-							"    <td>{{Population}}</td>\r",
-							"    <td>{{Slug Nation}}</td>\r",
-							"</tr>\r",
-							"\r",
-							"\r",
 							"pm.test(\"Response status code is 200\", function () {\r",
 							"    pm.expect(pm.response.code).to.equal(200);\r",
 							"});\r",
 							"\r",
-							"\r",
 							"pm.test(\"Response Content-Type header is application/json\", function () {\r",
 							"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");\r",
 							"});\r",
-							"\r",
 							"\r",
 							"pm.test(\"Source object is present in the response\", function () {\r",
 							"    const responseData = pm.response.json();\r",
 							"    \r",
 							"    pm.expect(responseData.source).to.exist;\r",
 							"});\r",
-							"\r",
 							"\r",
 							"pm.test(\"Verify source object contains expected annotations and measures\", function () {\r",
 							"    const responseData = pm.response.json();\r",
@@ -192,6 +235,36 @@
 							"        pm.expect(responseData.source.measures).to.be.an('array').and.to.have.lengthOf.at.least(1);\r",
 							"    }\r",
 							"});var template = `\r",
+							"//<style type=\"text/css\">\r",
+							"    .tftable {font-size:14px;color:#333333;width:100%;border-width: 1px;border-color: #87ceeb;border-collapse: collapse;}\r",
+							"    .tftable th {font-size:18px;background-color:#87ceeb;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;text-align:left;}\r",
+							"    .tftable tr {background-color:#ffffff;}\r",
+							"    .tftable td {font-size:14px;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;}\r",
+							"    .tftable tr:hover {background-color:#e0ffff;}\r",
+							"</style>\r",
+							"\r",
+							"<table class=\"tftable\" border=\"1\">\r",
+							"    <tr>\r",
+							"        <th>ID State</th>\r",
+							"        <th>State</th>\r",
+							"        <th>ID Year</th>\r",
+							"        <th>Year</th>\r",
+							"        <th>Population</th>\r",
+							"        <th>Slug State</th>\r",
+							"    </tr>\r",
+							"    \r",
+							"    {{#each response.data}}\r",
+							"        <tr>\r",
+							"            <td>{{ID State}}</td>\r",
+							"            <td>{{State}}</td>\r",
+							"            <td>{{ID Year}}</td>\r",
+							"            <td>{{Year}}</td>\r",
+							"            <td>{{Population}}</td>\r",
+							"            <td>{{Slug State}}</td>\r",
+							"        </tr>\r",
+							"    {{/each}}\r",
+							"</table>//\r",
+							"\r",
 							"<style type=\"text/css\">\r",
 							"    .tftable {font-size:14px;color:#333333;width:100%;border-width: 1px;border-color: #87ceeb;border-collapse: collapse;}\r",
 							"    .tftable th {font-size:18px;background-color:#87ceeb;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;text-align:left;}\r",
@@ -202,23 +275,26 @@
 							"\r",
 							"<table class=\"tftable\" border=\"1\">\r",
 							"    <tr>\r",
-							"        <th>ID Nation</th>\r",
-							"        <th>Nation</th>\r",
+							"        <th>ID State</th>\r",
+							"        <th>State</th>\r",
+							"        <th>ID Year</th>\r",
 							"        <th>Year</th>\r",
 							"        <th>Population</th>\r",
-							"        <th>Slug Nation</th>\r",
+							"        <th>Slug State</th>\r",
 							"    </tr>\r",
 							"    \r",
 							"    {{#each response.data}}\r",
 							"        <tr>\r",
-							"            <td>{{ID Nation}}</td>\r",
-							"            <td>{{Nation}}</td>\r",
+							"            <td>{{ID_State}}</td>\r",
+							"            <td>{{State}}</td>\r",
+							"            <td>{{ID_Year}}</td>\r",
 							"            <td>{{Year}}</td>\r",
 							"            <td>{{Population}}</td>\r",
-							"            <td>{{Slug Nation}}</td>\r",
+							"            <td>{{Slug_State}}</td>\r",
 							"        </tr>\r",
 							"    {{/each}}\r",
 							"</table>\r",
+							"\r",
 							"`;\r",
 							"\r",
 							"function constructVisualizerPayload() {\r",
